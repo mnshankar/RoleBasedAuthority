@@ -25,8 +25,8 @@ Add to alias list:
 ```
 
 The major changes from Authority are:
-1. DB migrations (include one to many relationship between roles and permissions
-1. Support for role inheritance (using "inherited_roleid" column in Roles)
-1. Config file changes (to loop through all user roles, and add rule list)
+* DB migrations (include one to many relationship between roles and permissions
+* Support for role inheritance (using "inherited_roleid" column in Roles)
+* Config file changes (to loop through all user roles, and add rule list)
 
 For all other instructions on usage, please follow the writeup on authority-l4 (and authority)

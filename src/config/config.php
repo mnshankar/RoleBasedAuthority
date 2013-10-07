@@ -1,21 +1,24 @@
 <?php
-return array (
-		
-		'initialize' => function ($authority) {
-			$user = $authority->getCurrentUser ();
-			
-			$authority->addAlias ( 'manage', array (
-					'create',
-					'read',
-					'update',
-					'delete' 
-			) );
-			$authority->addAlias ( 'moderate', array (
-					'read',
-					'update',
-					'delete' 
-			) );
-			//$authority->allow ( 'manage', 'all' );
+return array(
+    
+    'initialize' => function ($authority)
+    {
+        $user = $authority->getCurrentUser();
+        
+        $authority->addAlias('manage', array(
+            'create',
+            'read',
+            'update',
+            'delete'
+        ));
+        $authority->addAlias('moderate', array(
+            'read',
+            'update',
+            'delete'
+        ));
+        // $authority->allow ( 'manage', 'all' );
+        //do the below only if there is a logged in user
+        if ($user) {
             $setRules = function ($authority, $role)
             {
                 foreach ($role->permissions as $perm) {
@@ -26,15 +29,15 @@ return array (
                     }
                 }
             };
-			
-			// loop through each of the users permissions, and create rules
-			foreach ( $user->roles as $role ) {
-				if ($role->inherited_roleid) {					
-					$inherited = Role::find ( $role->inherited_roleid );
-					$setRules($authority, $inherited);					
-				}
-				$setRules($authority, $role);				
-			}
-		
-		} 
+            
+            // loop through each of the users permissions, and create rules
+            foreach ($user->roles as $role) {
+                if ($role->inherited_roleid) {
+                    $inherited = Role::find($role->inherited_roleid);
+                    $setRules($authority, $inherited);
+                }
+                $setRules($authority, $role);
+            }
+        }
+    }
 );

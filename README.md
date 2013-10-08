@@ -1,11 +1,9 @@
 Laravel4 - RoleBasedAuthority
 =============================
-This is a simple package that provide role based access control for Laravel4 applications.
+This is a simple package that provides role based access control for Laravel4 applications.
 
-It is very similar to Authority-L4 but focuses on managing permissions assigned to 
-user "roles" instead of users.
-
-https://github.com/machuga/authority-l4
+It is very similar to Authority-L4 in that it provides a Laravel 4 shell around the "Authority" 
+package. This package however focuses on managing permissions assigned to "roles" rather than users.
 
 To install via composer:
 
@@ -23,10 +21,35 @@ Add to alias list:
 ```
 'Authority'        => 'mnshankar\RoleBasedAuthority\Facades\Authority',
 ```
+Run all migrations:
+```
+php artisan migrate --package="mnshankar/role-based-authority"
+```
+Publish the configuration file:
+```
+php artisan config:publish mnshankar/role-based-authority
+```
 
 The major changes from Authority are:
 * DB migrations (include one to many relationship between roles and permissions
-* Support for role inheritance (using "inherited_roleid" column in Roles)
-* Config file changes (to loop through all user roles, and add rule list)
+* Support for role inheritance (using the "inherited_roleid" column in Roles)
+* Config file changes (to loop through all user roles, and create rule list)
 
-For all other instructions on usage, please follow the writeup on authority-l4 (and authority)
+Common usage pattern:
+
+Once you have the tables setup (with users, roles and permissions), checking authorization 
+within your application is failry trivial. The following snippet of code demonstrates 
+my preferred method of checking for appropriate privileges:
+
+```
+if (Authority::cannot('action','resource'))
+    {
+        App::abort(401, 'You are not authorized.');
+    }
+//else.. proceed with logic
+    
+```    
+For more instructions on usage, please follow the writeup on authority-l4 (and authority)
+
+https://github.com/machuga/authority-l4
+https://github.com/machuga/authority

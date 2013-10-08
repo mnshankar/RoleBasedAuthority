@@ -16,6 +16,7 @@ return array(
             'update',
             'delete'
         ));
+        //ORDER OF RULES IS IMPORTANT
         //put your custom rules here.. note that they will be superceded by 
         //rules dictated in your roles table.
         

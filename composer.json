@@ -1,6 +1,6 @@
 {
     "name": "mnshankar/role-based-authority",
-    "description": "Adapting Authority-L4 to use Roles (instead of users) as central unit of permission management",
+    "description": "Modifies Authority-L4 to use Roles (instead of users) as the central unit of previlege management",
     "keywords": ["Laravel4","RBAC", "Authorization", "Roles"],
     "authors": [
         {

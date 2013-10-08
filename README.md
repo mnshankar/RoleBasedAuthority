@@ -5,7 +5,12 @@ This is a simple package that provides role based access control for Laravel4 ap
 It is very similar to Authority-L4 in that it provides a Laravel 4 shell around the "Authority" 
 package. This package however focuses on managing permissions assigned to "roles" rather than users.
 
-To install via composer:
+After examining a whole host of authorization systems for Laravel, I settled on Authority
+* Easy to understand and manage
+* Runs on PHP 5.3+
+* Works exactly as advertised
+ 
+To install RoleBasedAuthority via composer:
 
 ```
 "require": {
@@ -13,11 +18,11 @@ To install via composer:
 		"mnshankar/role-based-authority": "dev-master"
 	},
 ```
-Add to Provider list:
+Add to Provider list (app.php):
 ```
 'mnshankar\RoleBasedAuthority\RoleBasedAuthorityServiceProvider',
 ```
-Add to alias list:
+Add to Alias list (app.php):
 ```
 'Authority'        => 'mnshankar\RoleBasedAuthority\Facades\Authority',
 ```
@@ -29,9 +34,10 @@ Publish the configuration file:
 ```
 php artisan config:publish mnshankar/role-based-authority
 ```
+(this central config file is where you would put all your rules)
 
 The major changes from Authority are:
-* DB migrations (include one to many relationship between roles and permissions
+* DB migrations (include one to many relationship between roles and permissions)
 * Support for role inheritance (using the "inherited_roleid" column in Roles)
 * Config file changes (to loop through all user roles, and create rule list)
 

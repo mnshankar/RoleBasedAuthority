@@ -16,9 +16,14 @@ return array(
             'update',
             'delete'
         ));
+        //put your custom rules here.. note that they will be superceded by 
+        //rules dictated in your roles table.
+        
         // $authority->allow ( 'manage', 'all' );
+        
         //do the below only if there is a logged in user
         if ($user) {
+            //this is an internal function that DRY's up rule creation
             $setRules = function ($authority, $role)
             {
                 foreach ($role->permissions as $perm) {
@@ -30,7 +35,8 @@ return array(
                 }
             };
             
-            // loop through each of the users permissions, and create rules
+            // loop through each of the users roles, and create rules based on 
+            // whether or not there is an inherited role involved
             foreach ($user->roles as $role) {
                 if ($role->inherited_roleid) {
                     $inherited = Role::find($role->inherited_roleid);
@@ -38,6 +44,6 @@ return array(
                 }
                 $setRules($authority, $role);
             }
-        }
+        }       
     }
 );

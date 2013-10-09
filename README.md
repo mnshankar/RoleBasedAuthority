@@ -41,9 +41,38 @@ php artisan config:publish mnshankar/role-based-authority
 ```
 (this central config file is where you would put all your rules)
 
+Create/Modify your User, Role and Permission models to permit relationships
+(many-to-many between users and roles, one-to-many between roles and permissions):
+User.php
+--------
+```
+...
+public function roles() {
+		return $this->belongsToMany('Role');
+	}
+...
+```
+Role.php
+--------
+```
+class Role extends Eloquent
+{
+	public function permissions() {
+		return $this->hasMany('Permission');
+	}
+}
+```	
+Permission.php
+--------------
+```
+class Permission extends Eloquent
+{
+	
+}
+```
 The major changes from Authority are:
-* DB migrations (include one to many relationship between roles and permissions)
-* The "type" field in table "permissions" is enum (allow/deny)
+* DB migrations (include relationships between users,roles and permissions)
+* The "type" field in table "permissions" is set to enum (allow/deny)
 * Support for role inheritance (using the "inherited_roleid" column in Roles)
 * Config file changes (to loop through all user roles, and create rule list)
 
@@ -56,7 +85,7 @@ my preferred method of checking for appropriate privileges:
 ```
 if (Authority::cannot('action','resource'))
     {
-        App::abort(401, 'You are not authorized.');
+        App::abort(403, 'You are not authorized.');
     }
 //else.. proceed with logic
     

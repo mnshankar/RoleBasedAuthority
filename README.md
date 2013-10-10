@@ -50,6 +50,15 @@ User.php
 public function roles() {
 		return $this->belongsToMany('Role');
 	}
+public function hasRole($key)
+    {
+        foreach ($this->roles as $role) {            
+            if ($role->role_name === $key) {
+                return true;
+            }
+        }        
+        return false;
+    }	
 ...
 ```
 Role.php
@@ -90,6 +99,17 @@ if (Authority::cannot('action','resource'))
 //else.. proceed with logic
     
 ```    
+Adding a role-check can be accomplished using filters like so:
+```
+Route::filter('admin', function(){
+    if (!Auth::user()->hasRole('admin'))
+    {
+        return App::abort('403', 'You are not authorized.');
+    }
+});
+```
+('admin' can then be used as a before filter)
+
 For more instructions on usage and available options, please follow the 
 writeup on authority-l4 (and authority)
 

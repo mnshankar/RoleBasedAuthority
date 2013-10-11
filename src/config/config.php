@@ -1,6 +1,6 @@
 <?php
 return array(
-    'cache'=>true,
+    'cache'=>false,
     'cache_ttl'=>5, //minutes 0= forever
     'initialize' => function ($authority)
     {

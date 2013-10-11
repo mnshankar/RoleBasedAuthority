@@ -85,6 +85,7 @@ The major changes from Authority are:
 * The "type" field in table "permissions" is set to enum (allow/deny)
 * Support for role inheritance (using the "inherited_roleid" column in Roles)
 * Config file changes (to loop through all user roles, and create rule list)
+* Support for caching the Authority object
 
 Common usage pattern:
 

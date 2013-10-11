@@ -39,7 +39,8 @@ Publish the configuration file:
 ```
 php artisan config:publish mnshankar/role-based-authority
 ```
-(this central config file is where you would put all your rules)
+(this central config file is where you would put all your rules. In order to cache the 
+"Authority" object, set 'cache' to true and specify cache_ttl)
 
 Create/Modify your User, Role and Permission models to permit relationships
 (many-to-many between users and roles, one-to-many between roles and permissions):

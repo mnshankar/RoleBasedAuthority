@@ -1,6 +1,7 @@
 <?php
 return array(
-    
+    'cache'=>true,
+    'cache_ttl'=>5, //minutes 0= forever
     'initialize' => function ($authority)
     {
         $user = $authority->getCurrentUser();

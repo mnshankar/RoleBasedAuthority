@@ -1,5 +1,4 @@
 <?php
-
 namespace mnshankar\RoleBasedAuthority;
 
 use Illuminate\Support\ServiceProvider;
@@ -20,11 +19,18 @@ class RoleBasedAuthorityServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {        
+    {
         $this->package('mnshankar/role-based-authority');
         
         $this->app['authority'] = $this->app->share(function ($app)
         {
+            $cache = $app['config']->get('role-based-authority::cache', false);
+            $cache_ttl = $app['config']->get('role-based-authority::cache_ttl', 0);
+            $cacheObj = $app->make('cache');
+            if ($cache && $cacheObj->has('role-based-authority'))
+            {
+                return $cacheObj->get('role-based-authority');
+            }
             $user = $app['auth']->user();
             $authority = new \Authority\Authority($user);
             $fn = $app['config']->get('role-based-authority::initialize', null);
@@ -32,7 +38,10 @@ class RoleBasedAuthorityServiceProvider extends ServiceProvider
             if ($fn) {
                 $fn($authority);
             }
-            
+            if ($cache)
+            {
+                $cacheObj->put('role-based-authority', $authority, $cache_ttl);
+            }            
             return $authority;
         });
     }
@@ -44,6 +53,8 @@ class RoleBasedAuthorityServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('authority');
+        return array(
+            'authority'
+        );
     }
 }

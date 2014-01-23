@@ -17,7 +17,7 @@ To install RoleBasedAuthority via composer:
 
 ```
 "require": {
-		"laravel/framework": "4.0.*",
+		"laravel/framework": "4.1.*",
 		"mnshankar/role-based-authority": "dev-master"
 	},
 ```

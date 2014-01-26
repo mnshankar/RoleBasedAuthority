@@ -15,7 +15,7 @@ class CreatePermissionsTable extends Migration {
 		Schema::create('permissions', function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('role_id')->unsigned();
-			$table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');			
+			$table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
 			$table->enum('type', array('allow', 'deny'));
 			$table->string('action');
 			$table->string('resource');

@@ -17,7 +17,7 @@ To install RoleBasedAuthority via composer:
 
 ```
 "require": {
-		"laravel/framework": "4.1.*",
+		"laravel/framework": "4.2.*",
 		"mnshankar/role-based-authority": "dev-master"
 	},
 ```
@@ -31,7 +31,8 @@ Add to Alias list (app.php):
 ```
 'Authority'        => 'mnshankar\RoleBasedAuthority\Facades\Authority',
 ```
-Run all migrations (remember to setup your database config prior to doing this):
+Run all migrations (Remember to setup your database config prior to doing this. Note that it contains a migration for the users table, and as such you might want to
+inspect the code prior to running):
 ```
 php artisan migrate --package="mnshankar/role-based-authority"
 ```
@@ -85,21 +86,47 @@ The major changes from Authority are:
 * The "type" field in table "permissions" is set to enum (allow/deny)
 * Support for role inheritance (using the "inherited_roleid" column in Roles)
 * Config file changes (to loop through all user roles, and create rule list)
-* Support for caching the Authority object
+* Support for caching the Authority object (set 'cache' to true in config file)
 
 Common usage pattern:
 
-Once you have the tables setup (with users, roles and permissions), checking authorization 
-within your application is fairly trivial. The following snippet of code demonstrates 
-my preferred method of checking for appropriate privileges:
-
+Once you have the tables setup (with users, roles and permissions), checking authorization within your application is fairly trivial.
+Here is some seed data to get you started:
 ```
-if (Authority::cannot('action','resource'))
-    {
-        App::abort(403, 'You are not authorized.');
-    }
-//else.. proceed with logic
-    
+--create a user (pwd must be hashed!)
+INSERT INTO users VALUES ('1', 'LastName', 'FirstName', 'email@email.com', 'hashedpwd****', now(), now());
+
+-- Establish roles. member inherits from guest and admin inherits from member
+INSERT INTO roles VALUES ('1', 'guest', null, now(), now());
+INSERT INTO roles VALUES ('2', 'member', '1', now(), now());
+INSERT INTO roles VALUES ('3', 'admin', '2', now(), now());
+
+-- Assign roles to users. Userid 1 has 'admin' role
+INSERT INTO role_user(role_id, user_id) VALUES ('3', '1');
+
+-- Setup Permissions table
+-- ----------------------------
+-- Role id 3 (admin) is allowed action "admin" on "all" resources
+-- NOTE: 'all' - is a special resource that can be used as a wildcard
+-- https://github.com/machuga/authority/blob/master/src/Authority/Rule.php#L101
+-- Role id 2 (member) is allowed "create", "view" and "edit" actions on resource named 'album'
+-- ----------------------------
+INSERT INTO permissions VALUES ('1', '3', 'allow', 'admin', 'all', now(), now());
+INSERT INTO permissions VALUES ('2', '2', 'allow', 'create', 'album', now(), now());
+INSERT INTO permissions VALUES ('3', '2', 'allow', 'view', 'album', now(), now());
+INSERT INTO permissions VALUES ('4', '2', 'allow', 'edit', 'album', now(), now());
+```
+The following snippets of code demonstrate methods of checking for appropriate privileges:
+```
+/***Check in controller - create() method of resource album***/
+//checks if the logged in user has authority to create an album
+//if person with admin or member role is logged in, they will be permitted. Not otherwise
+
+Auth::loginUsingId(1);  //force login - testing only
+if (Authority::cannot('create', 'album')) {
+       App::abort('403', 'Sorry! Not authorized');
+}
+
 ```    
 Adding a role-check can be accomplished using filters like so:
 ```
@@ -112,7 +139,7 @@ Route::filter('admin', function(){
 ```
 ('admin' can then be used as a before filter)
 
-For more instructions on usage and available options, please follow the 
+For more instructions on usage and available options, please follow the
 writeup on authority-l4 (and authority)
 
 https://github.com/machuga/authority-l4
